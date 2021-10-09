@@ -1,6 +1,20 @@
 {
   "name": "@theomessin/ts-builder",
   "version": "0.1.0",
+  "description": "TypeScript build system support for Node.js",
+  "keywords": [
+    "build",
+    "mocha",
+    "node",
+    "project",
+    "references",
+    "tsc",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theomessin/ts-builder.git"
+  },
   "license": "MIT",
   "author": "Theodore Messinezis",
   "exports": {

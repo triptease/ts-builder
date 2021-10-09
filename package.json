@@ -1,0 +1,26 @@
+{
+  "name": "@theomessin/ts-builder",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Theodore Messinezis",
+  "exports": {
+    "./register": "./dist/register.js"
+  },
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "source-map-support": "^0.5.20"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.3",
+    "@types/source-map-support": "^0.5.4",
+    "typescript": "^4.4.3"
+  },
+  "peerDependencies": {
+    "typescript": ">=3.6.0"
+  }
+}

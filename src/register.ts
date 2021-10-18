@@ -26,7 +26,8 @@ const retrieveFile = (path: string): string => {
     unlinkSync(tsBuilderConfigPath);
 
     // TODO: parse the tsBuilderConfig instead of the original one.
-    const compiledFilePath = ts.getOutputFileNames(parsedTsconfig, path, false)[0];
+    let compiledFilePath = ts.getOutputFileNames(parsedTsconfig, path, false)[0];
+    if (extname(compiledFilePath) === ".jsx") compiledFilePath = compiledFilePath.slice(0, -1);
     return readFileSync(compiledFilePath, "utf-8");
 }
 

@@ -1,11 +1,11 @@
 import * as ts from "typescript";
-import {dirname, extname} from "path";
+import {extname} from "path";
 import {existsSync, readFileSync} from "fs";
 import {install as sourceMap} from 'source-map-support';
 
 const retrieveFile = (path: string): string => {
     if (existsSync(path) === false) return;
-    if (extname(path) !== ".ts") return readFileSync(path, "utf-8");
+    if (extname(path) !== ".ts" || extname(path) !== ".tsx") return readFileSync(path, "utf-8");
 
     const tsconfigPath = ts.findConfigFile(path, ts.sys.fileExists);
     const solutionBuilderHost = ts.createSolutionBuilderHost();
@@ -18,7 +18,7 @@ const retrieveFile = (path: string): string => {
     return readFileSync(compiledFilePath, "utf-8");
 }
 
-require.extensions[".ts"] = (module: NodeJS.Module, filename) =>
+require.extensions[".ts"] = require.extensions[".tsx"] = (module: NodeJS.Module, filename) =>
     // @ts-ignore
     module._compile(retrieveFile(filename), filename);
 

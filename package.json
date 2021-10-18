@@ -1,6 +1,6 @@
 {
   "name": "@theomessin/ts-builder",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "TypeScript build system support for Node.js",
   "keywords": [
     "build",

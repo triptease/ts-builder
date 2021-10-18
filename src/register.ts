@@ -1,19 +1,31 @@
 import * as ts from "typescript";
-import {extname} from "path";
-import {existsSync, readFileSync} from "fs";
-import {install as sourceMap} from 'source-map-support';
+import {dirname, extname, join} from "path";
+import {existsSync, readFileSync, unlinkSync, writeFileSync} from "fs";
+import {install as sourceMap} from "source-map-support";
 
 const retrieveFile = (path: string): string => {
     if (existsSync(path) === false) return;
     if (extname(path) !== ".ts" && extname(path) !== ".tsx") return readFileSync(path, "utf-8");
 
     const tsconfigPath = ts.findConfigFile(path, ts.sys.fileExists);
-    const solutionBuilderHost = ts.createSolutionBuilderHost();
-    const solutionBuilder = ts.createSolutionBuilder(solutionBuilderHost, [tsconfigPath], {});
-    solutionBuilder.build(tsconfigPath);
-
     const parseConfigFileHost =  ts.sys as unknown as ts.ParseConfigFileHost
     const parsedTsconfig = ts.getParsedCommandLineOfConfigFile(tsconfigPath, {}, parseConfigFileHost);
+
+    const tsBuilderConfig = {...parsedTsconfig.raw, compilerOptions: {
+        ...parsedTsconfig.raw.compilerOptions, 
+        jsx: "react",
+        tsBuildInfoFile: "tsconfig.tsbuildinfo",
+    }};
+
+    const tsBuilderConfigPath = join(dirname(tsconfigPath), "tsconfig.tsbuilder.json");
+    writeFileSync(tsBuilderConfigPath, JSON.stringify(tsBuilderConfig));
+
+    const solutionBuilderHost = ts.createSolutionBuilderHost();
+    const solutionBuilder = ts.createSolutionBuilder(solutionBuilderHost, [tsBuilderConfigPath], {});
+    solutionBuilder.build(tsBuilderConfigPath);
+    unlinkSync(tsBuilderConfigPath);
+
+    // TODO: parse the tsBuilderConfig instead of the original one.
     const compiledFilePath = ts.getOutputFileNames(parsedTsconfig, path, false)[0];
     return readFileSync(compiledFilePath, "utf-8");
 }
@@ -24,6 +36,6 @@ require.extensions[".ts"] = require.extensions[".tsx"] = (module: NodeJS.Module,
 
 sourceMap({
     retrieveFile,
-    environment: 'node',
+    environment: "node",
     handleUncaughtExceptions: false
 })

@@ -5,7 +5,7 @@ import {install as sourceMap} from 'source-map-support';
 
 const retrieveFile = (path: string): string => {
     if (existsSync(path) === false) return;
-    if (extname(path) !== ".ts" || extname(path) !== ".tsx") return readFileSync(path, "utf-8");
+    if (extname(path) !== ".ts" && extname(path) !== ".tsx") return readFileSync(path, "utf-8");
 
     const tsconfigPath = ts.findConfigFile(path, ts.sys.fileExists);
     const solutionBuilderHost = ts.createSolutionBuilderHost();
